@@ -11,4 +11,3 @@ def EffNet0(config, trainable_base=False) -> keras.models.Sequential:
     model.add(keras.layers.Dense(1, activation="sigmoid", name="fc_out"))
     conv_base.trainable = trainable_base
     return model
-
