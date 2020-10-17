@@ -8,6 +8,9 @@ def EffNet0(config, trainable_base=False) -> keras.models.Sequential:
     model = keras.models.Sequential()
     model.add(conv_base)
     model.add(keras.layers.GlobalMaxPooling2D(name="gap"))
+    model.add(keras.layers.Dense(4096, activation='relu'))
+    #model.add(keras.layers.Dropout(0.2))
+    model.add(keras.layers.Dense(4096, activation='relu'))
     model.add(keras.layers.Dense(1, activation="sigmoid", name="fc_out"))
     conv_base.trainable = trainable_base
     return model
