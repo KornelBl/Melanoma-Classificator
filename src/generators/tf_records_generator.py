@@ -44,7 +44,7 @@ def get_dataset(files, config, augment=False, shuffle=False, repeat=False,
     ds = ds.map(map_function,
                 num_parallel_calls=AUTO)
 
-    ds = ds.batch(160,drop_remainder=True)
+    ds = ds.batch(config["batch_size"]*config["replicas"],drop_remainder=True)
     ds = ds.prefetch(AUTO)
     return ds
 
