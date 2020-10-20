@@ -6,7 +6,7 @@ def get_kfold_split(files_train, k = 5):
     skf = KFold(n_splits=k,shuffle=True,random_state=42)
     for fold,(train_idx,val_idx) in enumerate(skf.split(files_train)):
         kfold_split[fold] = dict(
-            train_files = files_train[train_idx],
-            val_files = files_train[val_idx]
+            train = files_train[train_idx],
+            validation = files_train[val_idx]
         )
     return kfold_split

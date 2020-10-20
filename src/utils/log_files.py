@@ -5,14 +5,14 @@ import numpy as np
 def save_config(config :dict):
     filename = os.path.join(get_log_dir(config) ,'config.json')
     config['output_bias'] = list(config['output_bias'])
-    with open(filename, 'x' ,) as f:
+    with open(filename, 'w' ,) as f:
         json.dump(config, f)
     config['output_bias'] = np.array(config['output_bias'])
 
 
 def save_fold_iter_history(config :dict ,history :dict, fold_iter_number :int):
     filename = os.path.join(get_log_dir(config) ,str(fold_iter_number ) +'.json')
-    with open(filename, 'x' ,) as f:
+    with open(filename, 'w' ,) as f:
         json.dump(history, f)
 
 
