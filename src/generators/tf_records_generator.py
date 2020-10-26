@@ -44,7 +44,7 @@ def get_dataset(files, config, augment=False, shuffle=False, repeat=False,
     ds = ds.map(map_function,
                 num_parallel_calls=AUTO)
 
-    ds = ds.batch(config["batch_size"]*config["replicas"],drop_remainder=True)
+    ds = ds.batch(config["batch_size"] * config["replicas"], drop_remainder=True)
     ds = ds.prefetch(AUTO)
     return ds
 
@@ -69,5 +69,4 @@ def read_labeled_tfrecord(example):
     }
     example = tf.io.parse_single_example(example, tfrec_format)
     np.shape(example['image'])
-    print(example['image'])
     return example['image'], example['target']
