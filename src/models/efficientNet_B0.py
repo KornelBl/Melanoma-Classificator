@@ -19,20 +19,21 @@ def EffNet0(config, trainable_base=False) -> keras.models.Sequential:
 
 
 def unfreeze_blocks(model: keras.models.Sequential, number_of_blocks) -> keras.models.Sequential:
+    model_base = model.layers[0]
     if number_of_blocks == "all":
-        model.trainable = True
-        return model
+        model_base.trainable = True
+        return model_base
     numbers = [i for i in range(7, 7-number_of_blocks, -1)]
     block_names = []
     for number in numbers:
         block_names.append(f"block{number}")
     if block_names:
         block_names.append("top_")
-    for layer in model.layers:
+    for layer in model_base.layers:
         for block_name in block_names:
             print(f"{block_name}, {layer.name}")
             if block_name in layer.name:
                 print(f"IT IS ON")
                 layer.trainable = True
                 break
-    return model
+    return model_base
