@@ -16,7 +16,7 @@ def save_fold_iter_history(config :dict ,history :dict, fold_iter_number :int):
         json.dump(history, f)
 
 
-def get_log_dir(config :dict):
+def get_log_dir(config: dict):
     if not config["trainable_base"]:
         dir_name = "TL_"
     else:

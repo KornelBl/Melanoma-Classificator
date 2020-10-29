@@ -1,7 +1,7 @@
 from sklearn.model_selection import KFold
 
 
-def get_kfold_split(files_train, k = 5):
+def get_kfold_split(files_train, k=5):
     kfold_split = dict()
     skf = KFold(n_splits=k,shuffle=True,random_state=42)
     for fold,(train_idx,val_idx) in enumerate(skf.split(files_train)):
