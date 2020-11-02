@@ -48,7 +48,10 @@ def get_dataset(files, config, augment=False, shuffle=False, repeat=False,
 
 
 def map_function_with_patient_info(input_data, imgname_or_label):
-    return [prepare_image(input_data[0]), prepare_patient_info(input_data[1])], tf.cast(imgname_or_label, tf.int32)
+    print(input_data)
+    print(input_data[0])
+    print(input_data[1])
+    return (prepare_image(input_data[0]), prepare_patient_info(input_data[1])), tf.cast(imgname_or_label, tf.int32)
 
 
 def map_function(img, imgname_or_label):
@@ -56,18 +59,11 @@ def map_function(img, imgname_or_label):
 
 
 def prepare_patient_info(patient):
-    patient_info = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-    if patient["sex"] == 0:
-        patient_info[0] = 1
-    elif patient["sex"] == 1:
-        patient_info[1] = 1
+    sex = tf.one_hot(patient[0], 2)
+    age_aprox = tf.dtypes.cast(tf.reshape(patient[1], [1]), tf.float32)
+    anatom_site = tf.one_hot(patient[2], 6)
 
-    patient_info[2] = patient["age"]
-
-    if patient["anatom_site_general_challenge"] != -1:
-        patient_info[3 + patient["anatom_site_general_challenge"]] = 1
-    patient_info = tf.cast(patient_info, tf.int32)
-    patient_info = tf.reshape(patient_info, 9)
+    patient_info = tf.concat([sex,age_aprox,anatom_site], axis=0)
     return patient_info
 
 def prepare_image(img):
@@ -89,9 +85,8 @@ def read_labeled_tfrecord_with_patient_info(example):
         'target': tf.io.FixedLenFeature([], tf.int64)
     }
     example = tf.io.parse_single_example(example, tfrec_format)
-    np.shape(example['image'])
-    return [example['image'], [example['sex'], example['age_approx'],
-                               example['anatom_site_general_challenge']]], example['target']
+    return (example['image'], (example['sex'], example['age_approx'],
+                               example['anatom_site_general_challenge'])), example['target']
 
 
 def read_labeled_tfrecord(example):
