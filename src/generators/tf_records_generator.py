@@ -48,9 +48,6 @@ def get_dataset(files, config, augment=False, shuffle=False, repeat=False,
 
 
 def map_function_with_patient_info(input_data, imgname_or_label):
-    print(input_data)
-    print(input_data[0])
-    print(input_data[1])
     return (prepare_image(input_data[0]), prepare_patient_info(input_data[1])), tf.cast(imgname_or_label, tf.int32)
 
 
