@@ -1,5 +1,6 @@
 import tensorflow as tf
 import tensorflow.keras.backend as K
+import re
 import numpy as np
 import PIL
 
@@ -100,3 +101,9 @@ def read_labeled_tfrecord(example):
     example = tf.io.parse_single_example(example, tfrec_format)
     np.shape(example['image'])
     return example['image'], example['target']
+
+
+def count_data_items(filenames):
+    n = [int(re.compile(r"-([0-9]*)\.").search(filename).group(1))
+         for filename in filenames]
+    return np.sum(n)
