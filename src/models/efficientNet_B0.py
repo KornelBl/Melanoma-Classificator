@@ -31,8 +31,8 @@ def EffNet0(config, trainable_base=False) -> keras.models.Model:
     fc_out = keras.layers.Dense(1, activation="sigmoid", name="fc_out", bias_initializer=output_bias)(dropout1)
 
     model = keras.models.Model(inputs=[input_img, pd_input], outputs=fc_out)
+
     freeze_blocks(eff_net_model=model.layers[9],number_of_blocks=config["inner_blocks_frozen"])
-    #conv_base = unfreeze_blocks(conv_base, config["inner_blocks_unfrozen"])
     return model
 
 
