@@ -23,7 +23,8 @@ def save_fold_iter_history(config :dict ,history :dict, fold_iter_number :int):
 
 
 def get_log_dir(config: dict):
-    dir_name = str(config["inner_blocks_frozen"]) + '_'
+    dir_name = config["log_prefix"]
+    dir_name = dir_name + str(config["inner_blocks_frozen"]) + '_'
     dir_name = dir_name + "EffN" + str(config["effnet_version"]) + '_'
     dir_name = dir_name + str(config["image_resolution"])
     dir_name = dir_name + config['time']
