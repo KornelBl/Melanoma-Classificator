@@ -43,9 +43,23 @@ def get_dataset(files, config, augment=False, shuffle=False, repeat=False,
         ds = ds.map(read_labeled_tfrecord, num_parallel_calls=AUTO)
         ds = ds.map(map_function, num_parallel_calls=AUTO)
 
+
+    if config['upsampling'] == True:
+        ds = ds.flat_map(upsample_map)
+
+
+
     ds = ds.batch(config["batch_size"] * config["replicas"], drop_remainder=True)
     ds = ds.prefetch(AUTO)
     return ds
+
+
+def upsample_map(x):
+    tf.data.Dataset.from_tensors(x).repeat(num_of_upsamples(x) * 5)
+
+
+def num_of_upsamples(example):
+    return example[1]
 
 
 def map_function_with_patient_info(input_data, imgname_or_label):
@@ -63,6 +77,7 @@ def prepare_patient_info(patient):
 
     patient_info = tf.concat([sex,age_aprox,anatom_site], axis=0)
     return patient_info
+
 
 def prepare_image(img):
     img = tf.image.decode_jpeg(img, channels=3)

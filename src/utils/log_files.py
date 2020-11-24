@@ -26,6 +26,7 @@ def get_log_dir(config: dict):
     dir_name = config["log_prefix"]
     dir_name = dir_name + str(config["inner_blocks_frozen"]) + '_'
     dir_name = dir_name + "EffN" + str(config["effnet_version"]) + '_'
+    dir_name = dir_name + str(config['lr_min']) + '-' + str(config['lr_max']) + '_'
     dir_name = dir_name + str(config["image_resolution"])
     dir_name = dir_name + config['time']
     dir_path = os.path.join('logs', dir_name)
