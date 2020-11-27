@@ -1,7 +1,7 @@
 import tensorflow.keras as keras
 import tensorflow as tf
 
-def EffNet0(config, trainable_base=False) -> keras.models.Model:
+def EffNet0(config) -> keras.models.Model:
     output_bias = keras.initializers.Constant(config['output_bias'])
     pd_dropout2 = None
     pd_input = None
@@ -17,14 +17,14 @@ def EffNet0(config, trainable_base=False) -> keras.models.Model:
         pd_activation2 = keras.layers.Activation('relu')(pd_batch_norm2)
         pd_dropout2 = keras.layers.Dropout(0.4)(pd_activation2)
 
-
-    input_img = keras.layers.Input(config["input_shape"])
-    conv_base = keras.applications.efficientnet.EfficientNetB0(weights='imagenet', include_top=False,
-                                                               input_shape=config["input_shape"])(input_img)
+    input_img = keras.layers.Input((config["image_resolution"], config["image_resolution"], 3))
+    conv_base_fun = get_effnet_function(config["effnet_version"])
+    conv_base = conv_base_fun(weights='imagenet', include_top=False,
+                              input_shape=(config["image_resolution"], config["image_resolution"], 3))(input_img)
 
     gmp = keras.layers.GlobalMaxPooling2D(name="gap")(conv_base)
     concat = keras.layers.concatenate([pd_dropout2, gmp])
-    dense1 = keras.layers.Dense(1024)(concat)
+    dense1 = keras.layers.Dense(1024*(2**config["effnet_version"]))(concat)
     batch_norm1 = keras.layers.BatchNormalization()(dense1)
     activation1 = keras.layers.Activation('swish')(batch_norm1)
     dropout1 = keras.layers.Dropout(0.4)(activation1)
@@ -32,8 +32,19 @@ def EffNet0(config, trainable_base=False) -> keras.models.Model:
 
     model = keras.models.Model(inputs=[input_img, pd_input], outputs=fc_out)
 
-    freeze_blocks(eff_net_model=model.layers[9],number_of_blocks=config["inner_blocks_frozen"])
+    freeze_blocks(eff_net_model=model.layers[9], number_of_blocks=config["inner_blocks_frozen"])
     return model
+
+
+
+
+def get_effnet_function(version:int=0):
+    if version == 0:
+        return keras.applications.efficientnet.EfficientNetB0
+    elif version == 1:
+        return keras.applications.efficientnet.EfficientNetB1
+
+
 
 
 def unfreeze_blocks(model_base, number_of_blocks) -> keras.models.Sequential:
